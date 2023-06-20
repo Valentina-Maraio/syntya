@@ -6,9 +6,11 @@ import {
   StyleSheet,
   SafeAreaView,
   Pressable,
+  Image,
 } from "react-native";
-import { musicJSON } from "../json/musicJSON.json";
+import {useSelector, useDispatch} from 'react-redux';
 import MusicCard from "../components/MusicCard";
+import { musicSlice } from "../redux/slices/musicSlice";
 
 const Item = ({ album }) => {
   return (
@@ -18,25 +20,38 @@ const Item = ({ album }) => {
   );
 };
 
-export default function Home({ navigation}) {
+export default function Home({ navigation}) { 
   const renderItem = ({ item }) => <Item name={item.album} />;
-
+  const dispatch = useDispatch() ;
+  const music = useSelector((state) => state.music.music)
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         key={"_"}
-        data={musicJSON}
+        data={music}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => navigation.navigate('MusicDetails')}
+            onPress={() => {
+              dispatch(musicSlice.actions.setChosenSong(item.rank));
+              console.log(item.rank)
+              console.log(item.title)
+              alert('Titulo de la cancion: ' + item.title)
+              navigation.navigate('MusicDetails')
+            }}
             style={styles.item}
           >
-            <Text style={styles.testo}>
-              {item.title} - {item.album}
+            <Image
+            source={{ uri: item.image}}
+            />
+            <Text style={styles.title}>
+             Title:  {item.title}
+            </Text>
+            <Text>
+              Almun: - {item.album} 
             </Text>
           </Pressable>
         )}
-        keyExtractor={(item) => "_" + item.rank}
+        keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );
@@ -48,7 +63,7 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: "#e6d3e8",
-    height: 150,
+    height: 100,
     justifyContent: "center",
     marginVertical: 8,
     marginHorizontal: 16,
@@ -56,6 +71,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   title: {
-    fontSize: 32,
+    fontSize: 20,
   },
 });

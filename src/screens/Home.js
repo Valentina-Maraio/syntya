@@ -7,8 +7,10 @@ import {
   SafeAreaView,
   Pressable,
   Image,
+  Row,
+  Col,
 } from "react-native";
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import MusicCard from "../components/MusicCard";
 import { musicSlice } from "../redux/slices/musicSlice";
 
@@ -20,10 +22,10 @@ const Item = ({ album }) => {
   );
 };
 
-export default function Home({ navigation}) { 
+export default function Home({ navigation }) {
   const renderItem = ({ item }) => <Item name={item.album} />;
-  const dispatch = useDispatch() ;
-  const music = useSelector((state) => state.music.music)
+  const dispatch = useDispatch();
+  const music = useSelector((state) => state.music.music);
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -33,22 +35,20 @@ export default function Home({ navigation}) {
           <Pressable
             onPress={() => {
               dispatch(musicSlice.actions.setChosenSong(item.rank));
-              console.log(item.rank)
-              console.log(item.title)
-              alert('Titulo de la cancion: ' + item.title)
-              navigation.navigate('MusicDetails')
+              console.log(item.rank);
+              console.log(item.title);
+              console.log("Titulo de la cancion: " + item.title);
+              navigation.navigate("MusicDetails");
             }}
             style={styles.item}
           >
-            <Image
-            source={{ uri: item.image}}
-            />
-            <Text style={styles.title}>
-             Title:  {item.title}
-            </Text>
-            <Text>
-              Almun: - {item.album} 
-            </Text>
+            <View style={styles.box}>
+              <View style={styles.content_box}>
+                <Image style={styles.image} source={item.image} />
+                <Text style={styles.title}>Title: {item.title}</Text>
+                <Text>Almun: - {item.album}</Text>
+              </View>
+            </View>
           </Pressable>
         )}
         keyExtractor={(item) => item.id}
@@ -60,10 +60,11 @@ export default function Home({ navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black'
   },
   item: {
-    backgroundColor: "#e6d3e8",
-    height: 100,
+    backgroundColor: "#e9f2f0",
+    height: "auto",
     justifyContent: "center",
     marginVertical: 8,
     marginHorizontal: 16,
@@ -72,5 +73,22 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+  },
+  image: {
+    width: 150,
+    height: 150,
+  },
+  box: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  content_box: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
